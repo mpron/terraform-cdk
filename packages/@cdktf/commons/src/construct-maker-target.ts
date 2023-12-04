@@ -106,9 +106,20 @@ export class ConstructsMakerModuleTarget extends ConstructsMakerTarget {
   }
 
   protected get simplifiedName(): string {
-    return (
-      this.namespace?.replace(/\//gi, ".").replace(/-/gi, "_") ?? this.name
-    );
+    if (!this.namespace) {
+      return this.name;
+    }
+
+    const parts = this.namespace?.split("/");
+    if (parts.length > 1) {
+      // Remove first one since it's the org name
+      parts.shift();
+    }
+
+    return [...parts, this.name]
+      .join(".")
+      .replace(/\//gi, ".")
+      .replace(/-/gi, "_");
   }
 }
 
