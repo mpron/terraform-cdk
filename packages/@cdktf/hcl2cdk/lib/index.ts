@@ -42,7 +42,7 @@ import {
 } from "./iteration";
 import { getProviderRequirements } from "./provider";
 import { logger } from "./utils";
-import { FQPN } from "@cdktf/provider-schema";
+import { FQPN, parseFQPN } from "@cdktf/provider-schema";
 import { attributeNameToCdktfName } from "./generation";
 import {
   replaceCsharpImports,
@@ -105,7 +105,10 @@ export async function convertToTypescript(
         new CodeMaker(),
         providerSchema
       );
-      providerGenerator.buildResourceModels(fqpn as FQPN); // can't use that type on the keys yet, since we are not on TS >=4.4 yet :sadcat:
+      providerGenerator.buildResourceModels(
+        fqpn as FQPN,
+        parseFQPN(fqpn as FQPN).name
+      ); // can't use that type on the keys yet, since we are not on TS >=4.4 yet :sadcat:
       return { ...carry, [fqpn]: providerGenerator };
     }, {}),
     constructs: new Set<string>(),
